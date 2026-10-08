@@ -1,30 +1,17 @@
 create database jecin;
 use jecin;
-DROP FUNCTION IF EXISTS CountStudentsByDepartment;
+DROP PROCEDURE IF EXISTS InsertStudent;
+
 DELIMITER //
 
-CREATE FUNCTION CountStudentsByDepartment(
-    p_DepartmentName VARCHAR(100)
+CREATE PROCEDURE InsertStudent(
+    IN p_StudentID INT,
+    IN p_StudentName VARCHAR(100),
+    IN p_CourseID INT
 )
-RETURNS INT
-READS SQL DATA
 BEGIN
-    DECLARE student_count INT DEFAULT 0;
-
-    SELECT COUNT(*)
-    INTO student_count
-    FROM Student s
-    INNER JOIN Course c
-        ON s.CourseID = c.CourseID
-    INNER JOIN Faculty f
-        ON c.FacultyID = f.FacultyID
-    INNER JOIN Department d
-        ON f.DepartmentID = d.DepartmentID
-    WHERE d.DepartmentName = p_DepartmentName;
-
-    RETURN student_count;
+    INSERT INTO Student (StudentID, StudentName, CourseID)
+    VALUES (p_StudentID, p_StudentName, p_CourseID);
 END //
 
 DELIMITER ;
-
-SELECT CountStudentsByDepartment('Computer Science') AS TotalStudents;
